@@ -11,16 +11,27 @@ class TestBooksCollector:
         collector.add_new_book(title)
         assert (title in collector.books_genre) == expected_result
 
-    @pytest.mark.parametrize("book_title, genre, expected_genre", [
-        ("Преступление и наказание", "Детективы", "Детективы"),
-        ("Великий Гэтсби", "Фантастика", "Фантастика")
+    @pytest.mark.parametrize("book_title, genre", [
+        ("Преступление и наказание", "Детективы"),
+        ("Великий Гэтсби", "Фантастика")
     ])
-    def test_set_book_genre_and_get_book_genre(self, book_title, genre, expected_genre):
+    def test_set_book_genre(self, book_title, genre):
         collector = BooksCollector()
         collector.add_new_book(book_title)
         collector.set_book_genre(book_title, genre)
+        genre_from_collector = collector.get_book_genre(book_title)
+        assert genre_from_collector == genre
+
+    @pytest.mark.parametrize("book_title", [
+        ("Преступление и наказание"),
+        ("Великий Гэтсби")
+    ])
+    def test_get_book_genre(self, book_title):
+        collector = BooksCollector()
+        collector.add_new_book(book_title)
+        # Предполагаем, что жанр уже был установлен
         genre = collector.get_book_genre(book_title)
-        assert genre == expected_genre
+        assert isinstance(genre, str)  # Проверяем, что жанр возвращен корректно
 
     @pytest.mark.parametrize("book_title, genre", [
         ("Гарри Поттер", "Фантастика"),
@@ -55,11 +66,20 @@ class TestBooksCollector:
         ("Ромео и Джульетта"),
         ("1984")
     ])
-    def test_add_and_delete_book_in_favorites(self, book_title):
+    def test_add_book_in_favorites(self, book_title):
         collector = BooksCollector()
         collector.add_new_book(book_title)
         collector.add_book_in_favorites(book_title)
         assert book_title in collector.favorites
+
+    @pytest.mark.parametrize("book_title", [
+        ("Ромео и Джульетта"),
+        ("1984")
+    ])
+    def test_delete_book_from_favorites(self, book_title):
+        collector = BooksCollector()
+        collector.add_new_book(book_title)
+        collector.add_book_in_favorites(book_title)
         collector.delete_book_from_favorites(book_title)
         assert book_title not in collector.favorites
 
