@@ -22,16 +22,17 @@ class TestBooksCollector:
         genre_from_collector = collector.get_book_genre(book_title)
         assert genre_from_collector == genre
 
-    @pytest.mark.parametrize("book_title", [
-        ("Преступление и наказание"),
-        ("Великий Гэтсби")
+    @pytest.mark.parametrize("book_title, genre", [
+        ("Преступление и наказание", "Детективы"),
+        ("Великий Гэтсби", "Фантастика")
     ])
-    def test_get_book_genre(self, book_title):
+    def test_get_book_genre(self, book_title, genre):
         collector = BooksCollector()
         collector.add_new_book(book_title)
-        # Предполагаем, что жанр уже был установлен
-        genre = collector.get_book_genre(book_title)
-        assert isinstance(genre, str)  # Проверяем, что жанр возвращен корректно
+        # Устанавливаем жанр напрямую в словарь, без использования метода set_book_genre
+        collector.books_genre[book_title] = genre
+        genre_from_collector = collector.get_book_genre(book_title)
+        assert genre_from_collector == genre
 
     @pytest.mark.parametrize("book_title, genre", [
         ("Гарри Поттер", "Фантастика"),
